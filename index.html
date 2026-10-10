@@ -46,17 +46,18 @@ nav a:hover,nav a.active{color:var(--gold)}
 
 /* ---------- Hero ---------- */
 .hero{position:relative;min-height:clamp(440px,46vw,640px);overflow:hidden;background:var(--bg)}
-.hero-img{position:absolute;inset:0 0 0 auto;width:100%;max-width:1440px}
+.hero-img{position:absolute;inset:0 0 0 auto;width:min(48%,660px)}
 .hero-img.ph::after{content:"+ foto principal do hero"}
-.hero-img img{object-position:75% 30%}
-.hero-img::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,var(--bg) 0%,rgba(18,16,14,.6) 18%,rgba(18,16,14,.3) 40%,transparent 62%),linear-gradient(0deg,var(--bg) 0%,transparent 22%)}
+.hero-img img{object-position:50% 40%}
+/* Transição: a foto se dissolve no fundo escuro (esquerda, topo e base) e recebe leve tom escuro para combinar com o site */
+.hero-img::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,var(--bg) 0%,rgba(18,16,14,.94) 7%,rgba(18,16,14,.78) 17%,rgba(18,16,14,.5) 30%,rgba(18,16,14,.24) 44%,rgba(18,16,14,.08) 56%,transparent 68%),linear-gradient(180deg,var(--bg) 0%,rgba(18,16,14,.6) 7%,transparent 20%),linear-gradient(0deg,var(--bg) 0%,rgba(18,16,14,.65) 9%,transparent 28%),linear-gradient(270deg,rgba(18,16,14,.45) 0%,transparent 14%),linear-gradient(rgba(18,16,14,.16),rgba(18,16,14,.16))}
 .hero .wrap{position:relative;z-index:3;padding-top:95px;padding-bottom:70px}
 .hero small{display:block;color:var(--gold2);font-family:var(--serif);font-size:1.15rem;margin-bottom:6px}
 .hero h1{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:clamp(2.3rem,5vw,3.4rem);line-height:1.08;color:#fff;max-width:520px}
 .hero h1 span{color:var(--gold);display:block}
 .orn{display:flex;align-items:center;gap:8px;color:var(--gold);margin-top:12px;font-size:.8rem}
 .orn::before,.orn::after{content:"";width:22px;height:1px;background:var(--gold)}
-.hero p{max-width:330px;font-size:.88rem;color:#e4dccc;margin:16px 0 20px}
+.hero p{max-width:610px;font-size:.88rem;color:#e4dccc;margin:16px 0 20px;line-height:1.65}
 .btns{display:flex;gap:12px;flex-wrap:wrap}
 .btn{padding:10px 18px;border-radius:7px;font-size:.82rem;font-weight:600;border:1px solid var(--gold);cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:inherit}
 .btn.fill{background:linear-gradient(180deg,#d1ae78,#b08a55);color:#1a140d}
@@ -95,7 +96,18 @@ nav a:hover,nav a.active{color:var(--gold)}
 @media(max-width:860px){.cores-wrap{grid-template-columns:1fr}}
 
 /* ---------- Filhotes ---------- */
-.pups{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 0 4px}
+.pups-wrap{position:relative}
+.pups{--per:4;--gap:14px;display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 2px 4px}
+.pups::-webkit-scrollbar{display:none}
+.pups .pup{flex:0 0 calc((100% - var(--gap)*(var(--per) - 1))/var(--per));scroll-snap-align:start}
+.pups,.gal{cursor:grab}
+.pups.drag,.gal.drag{scroll-snap-type:none;scroll-behavior:auto;cursor:grabbing;user-select:none}
+.pups img,.gal img{-webkit-user-drag:none;user-select:none}
+.pup .ph{cursor:zoom-in}
+.pup .ph img{transition:transform .35s;object-position:50% 30%}
+.pup .ph:hover img{transform:scale(1.04)}
+.pup .ph:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pup .ph .count{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(18,16,14,.82);color:var(--gold);border:1px solid var(--gold-line);border-radius:20px;padding:3px 10px;font-size:.68rem;font-weight:600;letter-spacing:.04em}
 .pup{background:var(--card);border:1px solid var(--gold-line);border-radius:12px;padding:8px 8px 12px}
 .pup .ph{aspect-ratio:1/1.05;border-radius:8px;background:linear-gradient(160deg,#f1e3c3,#d9c391)}
 .pup .ph::after{color:#8a7448}
@@ -133,9 +145,38 @@ nav a:hover,nav a.active{color:var(--gold)}
 .gal-dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:#4a3f2e;cursor:pointer;transition:.2s}
 .gal-dots button.on{background:var(--gold);width:22px;border-radius:6px}
 
+
+/* ---------- Pop-up de fotos do filhote ---------- */
+.pm{position:fixed;inset:0;z-index:210;background:rgba(10,8,6,.94);display:none;align-items:center;justify-content:center;padding:16px}
+.pm.on{display:flex}
+.pm-box{position:relative;width:min(940px,100%);max-height:100%;overflow:auto;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;background:var(--card);border:1px solid var(--gold-line);border-radius:16px;padding:16px;box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.pm-stage{position:relative;display:grid;place-items:center;background:#0e0b09;border-radius:10px;height:min(74vh,660px);min-height:280px}
+.pm-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.pm-stage button,.pm-x{background:rgba(18,16,14,.85);border:1px solid var(--gold);color:var(--gold);border-radius:50%;cursor:pointer;line-height:1;font-size:1.5rem;width:40px;height:40px}
+.pm-stage button{position:absolute;top:50%;transform:translateY(-50%)}
+.pm-stage button:hover,.pm-x:hover{background:var(--gold);color:#1a140d}
+.pm-stage .p{left:8px}.pm-stage .n{right:8px}
+.pm-count{position:absolute;left:10px;bottom:10px;background:rgba(18,16,14,.82);color:var(--gold);border:1px solid var(--gold-line);border-radius:20px;padding:3px 11px;font-size:.72rem;font-weight:600}
+.pm-x{position:absolute;top:10px;right:10px;z-index:5}
+.pm-info{display:flex;flex-direction:column;gap:14px;min-width:0;padding-top:30px}
+.pm-info h3{font-family:var(--serif);font-weight:400;font-size:1.7rem;line-height:1.1}
+.pm-info .stat{margin:0;font-size:.9rem}
+.pm-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.pm-thumbs button{padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:#0e0b09;cursor:pointer;aspect-ratio:1;opacity:.65;transition:.2s}
+.pm-thumbs button.on{border-color:var(--gold);opacity:1}
+.pm-thumbs button:hover{opacity:1}
+.pm-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.pm-info .btn{justify-content:center;margin-top:auto}
+@media(max-width:760px){
+  .pm{padding:10px;align-items:flex-start}
+  .pm-box{grid-template-columns:1fr;gap:14px;max-height:100%}
+  .pm-stage{height:min(62vh,520px)}
+  .pm-info{padding-top:0}
+}
+
 /* ---------- Footer premium ---------- */
 footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48px 0 0}
-.foot-card{position:relative;display:flex;align-items:center;aspect-ratio:21/8;min-height:300px;border:1px solid var(--gold-line);border-radius:20px;overflow:hidden;background:#100d0b;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.02)}
+.foot-card{position:relative;display:flex;align-items:center;aspect-ratio:21/8;min-height:410px;border:1px solid var(--gold-line);border-radius:20px;overflow:hidden;background:#100d0b;box-shadow:0 24px 60px rgba(0,0,0,.55),inset 0 0 0 1px rgba(255,255,255,.02)}
 .foot-card .ph{position:absolute;inset:0}
 .foot-card .ph img{object-position:82% 16%}
 .foot-card .ph::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#100d0b 0%,rgba(16,13,11,.92) 28%,rgba(16,13,11,.35) 52%,transparent 70%),linear-gradient(0deg,rgba(16,13,11,.55) 0%,transparent 35%)}
@@ -146,6 +187,9 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
 .foot-brand h3 span{display:block;color:var(--gold)}
 .foot-brand .orn{margin-top:14px}
 .foot-brand p{margin-top:12px;font-size:.84rem;color:#cfc6b4;max-width:300px}
+.affil{display:flex;align-items:center;gap:14px;margin-top:18px}
+.affil img{width:72px;height:72px;object-fit:contain;display:block}
+.affil+p{margin-top:14px}
 .foot-cols{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:44px;padding:52px 6px 44px}
 .foot-cols h4{font-family:var(--sans);font-weight:600;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid rgba(196,160,106,.2)}
 .foot-cols ul{list-style:none;display:grid;gap:13px;font-size:.88rem;color:#cfc6b4}
@@ -201,7 +245,8 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
 
 /* ---------- Responsivo ---------- */
 @media(max-width:900px){
-  .feats,.pups{grid-template-columns:repeat(2,1fr)}
+  .feats{grid-template-columns:repeat(2,1fr)}
+  .pups{--per:2}
   .gal{--per:3}
 }
 @media(max-width:760px){
@@ -211,12 +256,12 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
 }
 @media(max-width:760px){
   .hero{min-height:0;background:var(--bg)}
-  .hero-img{position:relative;inset:auto;height:clamp(260px,70vw,420px)}
+  .hero-img{position:relative;inset:auto;width:100%;height:clamp(300px,84vw,460px)}
   .hero-img::before{background:linear-gradient(0deg,var(--bg) 0%,rgba(18,16,14,.6) 18%,transparent 45%)}
-  .hero-img img{object-position:80% 20%}
+  .hero-img img{object-position:50% 38%}
   .hero .wrap{padding-top:6px;padding-bottom:40px}
 }
-@media(max-width:480px){.color{width:calc(50% - 10px);max-width:170px}.gal{--per:1}.gal-btn.prev{left:6px}.gal-btn.next{right:6px}.feats,.pups{grid-template-columns:1fr}.colors{gap:20px}}
+@media(max-width:480px){.color{width:calc(50% - 10px);max-width:170px}.gal{--per:1}.gal-btn.prev{left:6px}.gal-btn.next{right:6px}.feats{grid-template-columns:1fr}.pups{--per:1}.colors{gap:20px}}
 </style>
 </head>
 <body>
@@ -256,13 +301,13 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
 
 <!-- ================= HERO ================= -->
 <section class="hero" id="inicio">
-  <!-- FOTO DO HERO: img/hero.jpg (recomendado 1400x780, lado esquerdo escuro para o texto) -->
-  <div class="hero-img ph"><img src="img/hero.jpg" data-fb="hero" alt="Mulher sorrindo com um filhote de chihuahua no colo"></div>
+  <!-- FOTO DO HERO: img/hero-cachorro.jpg (a foto se dissolve no fundo escuro pelo degradê em .hero-img::before) -->
+  <div class="hero-img ph"><img src="img/hero-cachorro.jpg" alt="Filhote de Chihuahua chocolate deitado em tapete vermelho com corações ao fundo"></div>
   <div class="wrap">
     <small>Canil Mirajara</small>
     <h1>Criação Especializada <span>de Chihuahuas</span></h1>
     <div class="orn" aria-hidden="true">♡</div>
-    <p>Compromisso absoluto com a saúde, a ética e o desenvolvimento ideal de cada filhote.</p>
+    <p>Crio a raça Chihuahua há mais de 20 anos, com muito amor, carinho e dedicação.<br>Compromisso absoluto com a saúde, a ética e o desenvolvimento ideal de cada filhote.</p>
     <div class="btns">
       <a href="#filhotes" class="btn fill">Ver Filhotes Disponíveis</a>
       <a href="#sobre" class="btn line">Conheça o Canil</a>
@@ -294,7 +339,7 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
         <li>Chocotam</li>
         <li>Creme</li>
         <li>Branco</li>
-        <li>Black Tam</li>
+        <li>Black And Tan</li>
         <li>Black</li>
         <li>Chocolate e Branco</li>
         <li>Preto e Branco</li>
@@ -302,7 +347,7 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
     </div>
     <div class="colors">
     <!-- Selos PNG na pasta img/. Para trocar, substitua o arquivo ou mude o src. -->
-    <div class="color"><img src="img/preto-bronze.png" data-fb="preto-bronze" alt="Chihuahua Preto e Bronze"></div>
+    <div class="color"><img src="img/preto-bronze.png" data-fb="preto-bronze" alt="Chihuahua Black And Tan"></div>
     <div class="color"><img src="img/chocolate.png" data-fb="chocolate" alt="Chihuahua Chocolate"></div>
     <div class="color"><img src="img/creme.png" data-fb="creme" alt="Chihuahua Creme"></div>
     <div class="color"><img src="img/lilac.png" data-fb="lilac" alt="Chihuahua Lilac"></div>
@@ -313,44 +358,54 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
 <!-- ================= FILHOTES ================= -->
 <section id="filhotes" class="wrap">
   <h2 class="title">Filhotes Disponíveis</h2>
-  <div class="pups">
-
-    <!-- FILHOTE 1 -->
-    <article class="pup">
-      <div class="ph"><img src="" alt="Filhote Chocolate"></div>
+  <!-- Carrossel: para adicionar um filhote, copie um <article class="pup"> inteiro e cole ao final.
+       Em data-photos coloque as fotos separadas por | (a primeira é a capa). Clique na foto abre o pop-up com todas. -->
+  <div class="pups-wrap">
+  <button class="gal-btn prev" aria-label="Filhotes anteriores">&#8249;</button>
+  <button class="gal-btn next" aria-label="Próximos filhotes">&#8250;</button>
+  <div class="pups" id="pups">
+    <article class="pup" data-photos="img/galeria/g17.jpg|img/galeria/g09.jpg|img/galeria/g26.jpg|img/galeria/g22.jpg">
+      <div class="ph" role="button" tabindex="0" aria-label="Ver fotos do filhote Chocolate"><img src="img/galeria/g17.jpg" alt="Filhote Chocolate" loading="lazy"></div>
       <h3>Chocolate</h3>
       <div class="stat"><span class="ok">Disponível</span><span>Macho</span></div>
       <div class="meta"><svg class="i"><use href="#pin"/></svg>Vacinado, Vermifugado</div>
       <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Chocolate" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
     </article>
 
-    <!-- FILHOTE 2 -->
-    <article class="pup">
-      <div class="ph"><img src="" alt="Filhote Merle"></div>
-      <h3>Merle</h3>
+    <article class="pup" data-photos="img/galeria/g23.jpg|img/galeria/g04.jpg|img/galeria/g18.jpg|img/galeria/g19.jpg">
+      <div class="ph" role="button" tabindex="0" aria-label="Ver fotos do filhote Lilac"><img src="img/galeria/g23.jpg" alt="Filhote Lilac" loading="lazy"></div>
+      <h3>Lilac</h3>
       <div class="stat"><span class="ok">Disponível</span><span>Fêmea</span></div>
       <div class="meta"><svg class="i"><use href="#pin"/></svg>Vacinada, Vermifugada</div>
-      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Merle" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
+      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Lilac" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
     </article>
 
-    <!-- FILHOTE 3 (reservado / fila de espera) -->
-    <article class="pup">
-      <div class="ph"><img src="" alt="Filhote Creme"></div>
+    <article class="pup" data-photos="img/galeria/g24.jpg">
+      <div class="ph" role="button" tabindex="0" aria-label="Ver fotos do filhote Creme"><img src="img/galeria/g24.jpg" alt="Filhote Creme" loading="lazy"></div>
       <h3>Creme</h3>
-      <div class="stat"><span class="wait">Sob Reserva</span><span>Macho</span></div>
-      <a class="btn out" href="https://wa.me/5521993738150?text=Quero%20entrar%20na%20fila%20de%20espera%20do%20filhote%20Creme" target="_blank" rel="noopener">Fila da Espera</a>
+      <div class="stat"><span class="ok">Disponível</span><span>Macho</span></div>
+      <div class="meta"><svg class="i"><use href="#pin"/></svg>Vacinado, Vermifugado</div>
+      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Creme" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
     </article>
 
-    <!-- FILHOTE 4 -->
-    <article class="pup">
-      <div class="ph"><img src="" alt="Filhote Preto e Bronze"></div>
-      <h3>Preto e Bronze</h3>
+    <article class="pup" data-photos="img/galeria/g25.jpg|img/galeria/g07.jpg|img/galeria/g13.jpg|img/galeria/g15.jpg">
+      <div class="ph" role="button" tabindex="0" aria-label="Ver fotos do filhote Black And Tan"><img src="img/galeria/g25.jpg" alt="Filhote Black And Tan" loading="lazy"></div>
+      <h3>Black And Tan</h3>
       <div class="stat"><span class="ok">Disponível</span><span>Fêmea</span></div>
       <div class="meta"><svg class="i"><use href="#pin"/></svg>Vacinada, Vermifugada</div>
-      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Preto%20e%20Bronze" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
+      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Black%20And%20Tan" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
     </article>
 
+    <article class="pup" data-photos="img/galeria/g20.jpg|img/galeria/g21.jpg|img/galeria/g05.jpg">
+      <div class="ph" role="button" tabindex="0" aria-label="Ver fotos do filhote Chocolate e Branco"><img src="img/galeria/g20.jpg" alt="Filhote Chocolate e Branco" loading="lazy"></div>
+      <h3>Chocolate e Branco</h3>
+      <div class="stat"><span class="ok">Disponível</span><span>Fêmea</span></div>
+      <div class="meta"><svg class="i"><use href="#pin"/></svg>Vacinada, Vermifugada</div>
+      <a class="btn dark" href="https://wa.me/5521993738150?text=Quero%20reservar%20o%20filhote%20Chocolate%20e%20Branco" target="_blank" rel="noopener"><svg class="i"><use href="#bolt"/></svg>Reservar</a>
+    </article>
   </div>
+  </div>
+  <div class="gal-dots" id="pupDots"></div>
 </section>
 
 <!-- ================= GALERIA ================= -->
@@ -405,6 +460,11 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
         <div class="seal"><!-- SELO/LOGO --><img src="" alt="Selo Canil Mirajara"><span class="seal-txt">Canil<br>Mirajara</span></div>
         <h3>Criação Especializada <span>de Chihuahuas</span></h3>
         <div class="orn" aria-hidden="true">♡</div>
+        <div class="affil">
+          <img src="img/cbkc.png" alt="CBKC - Confederação Brasileira de Cinofilia" loading="lazy">
+          <img src="img/alkc.png" alt="ALKC - América Latina Kennel Clube" loading="lazy">
+        </div>
+        <p>Compromisso com o padrão da raça — Canil filiado à CBKC e ALKC.</p>
       </div>
     </div>
 
@@ -431,7 +491,6 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
         <h4>Canil Mirajara</h4>
         <ul>
           <li><svg class="i"><use href="#mail"/></svg><span>contato@kennelmirajara.com</span></li>
-          <li><svg class="i"><use href="#globe"/></svg><span>www.kennelmirajara.com</span></li>
         </ul>
       </div>
     </div>
@@ -446,6 +505,24 @@ footer{background:#0e0b09;border-top:1px solid rgba(196,160,106,.22);padding:48p
     </div>
   </div>
 </footer>
+
+<div class="pm" id="pm" role="dialog" aria-modal="true" aria-label="Fotos do filhote" aria-hidden="true">
+  <div class="pm-box">
+    <button class="pm-x" aria-label="Fechar">&times;</button>
+    <div class="pm-stage">
+      <button class="p" aria-label="Foto anterior">&#8249;</button>
+      <img alt="">
+      <button class="n" aria-label="Próxima foto">&#8250;</button>
+      <span class="pm-count"></span>
+    </div>
+    <div class="pm-info">
+      <h3></h3>
+      <div class="stat"><span class="pm-status"></span><span class="pm-sex"></span></div>
+      <div class="pm-thumbs"></div>
+      <a class="btn fill" target="_blank" rel="noopener"></a>
+    </div>
+  </div>
+</div>
 
 <div class="lb" id="lb" aria-hidden="true"><button class="x" aria-label="Fechar">&times;</button><button class="p" aria-label="Anterior">&#8249;</button><img alt=""><button class="n" aria-label="Próxima">&#8250;</button></div>
 
@@ -500,6 +577,94 @@ document.querySelectorAll('#menu a').forEach(function(a){
   lb.querySelector('.x').onclick=hide;lb.querySelector('.p').onclick=function(){show(i-1)};lb.querySelector('.n').onclick=function(){show(i+1)};
   lb.addEventListener('click',function(e){if(e.target===lb)hide()});
   document.addEventListener('keydown',function(e){if(!lb.classList.contains('on'))return;if(e.key==='Escape')hide();if(e.key==='ArrowLeft')show(i-1);if(e.key==='ArrowRight')show(i+1)});
+})();
+</script>
+<script>
+/* Filhotes: carrossel + pop-up com todas as fotos de cada filhote */
+(function(){
+  var g=document.getElementById('pups'),dots=document.getElementById('pupDots');
+  if(!g)return;
+  var wrap=g.parentNode,prev=wrap.querySelector('.prev'),next=wrap.querySelector('.next');
+  function per(){return parseInt(getComputedStyle(g).getPropertyValue('--per'))||1}
+  function pages(){return Math.max(1,Math.ceil(g.children.length/per()))}
+  function step(){return g.clientWidth+parseFloat(getComputedStyle(g).gap||0)}
+  function build(){
+    dots.innerHTML='';
+    for(var i=0;i<pages();i++){(function(i){
+      var b=document.createElement('button');b.setAttribute('aria-label','Página '+(i+1));
+      b.onclick=function(){g.scrollTo({left:i*step()})};dots.appendChild(b)})(i)}
+    update();
+  }
+  function update(){
+    var max=g.scrollWidth-g.clientWidth,need=max>4;
+    prev.hidden=next.hidden=!need;dots.style.display=need?'flex':'none';
+    var idx=Math.min(pages()-1,Math.round(g.scrollLeft/step()));
+    [].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i===idx)});
+  }
+  prev.onclick=function(){g.scrollLeft<=2?g.scrollTo({left:g.scrollWidth}):g.scrollBy({left:-step()})};
+  next.onclick=function(){g.scrollLeft>=g.scrollWidth-g.clientWidth-2?g.scrollTo({left:0}):g.scrollBy({left:step()})};
+  g.addEventListener('scroll',function(){window.requestAnimationFrame(update)});
+  window.addEventListener('resize',build);
+  build();
+
+  /* ---- pop-up ---- */
+  var pm=document.getElementById('pm'),stage=pm.querySelector('.pm-stage img'),count=pm.querySelector('.pm-count'),
+      thumbs=pm.querySelector('.pm-thumbs'),cta=pm.querySelector('.pm-info .btn'),photos=[],cur=0;
+  function photosOf(card){return (card.getAttribute('data-photos')||'').split('|').filter(Boolean)}
+  function show(i){
+    cur=(i+photos.length)%photos.length;stage.src=photos[cur];
+    count.textContent=(cur+1)+' / '+photos.length;
+    [].forEach.call(thumbs.children,function(t,k){t.classList.toggle('on',k===cur)});
+    var multi=photos.length>1;pm.querySelector('.p').hidden=pm.querySelector('.n').hidden=!multi;
+  }
+  function open(card,i){
+    photos=photosOf(card);if(!photos.length)return;
+    var name=card.querySelector('h3').textContent;
+    stage.alt='Filhote '+name;
+    pm.querySelector('h3').textContent=name;
+    var st=card.querySelectorAll('.stat span');
+    var s1=pm.querySelector('.pm-status'),s2=pm.querySelector('.pm-sex');
+    s1.textContent=st[0]?st[0].textContent:'';s1.className='pm-status '+(st[0]?st[0].className:'');
+    s2.textContent=st[1]?st[1].textContent:'';
+    thumbs.innerHTML='';thumbs.style.display=photos.length>1?'grid':'none';
+    photos.forEach(function(p,k){var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Foto '+(k+1));
+      var im=document.createElement('img');im.src=p;im.alt='';b.appendChild(im);b.onclick=function(){show(k)};thumbs.appendChild(b)});
+    var a=card.querySelector('.btn');
+    if(a){cta.href=a.href;cta.textContent=a.textContent.trim()==='Reservar'?'Reservar este filhote':a.textContent.trim();cta.hidden=false}else{cta.hidden=true}
+    pm.classList.add('on');pm.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+    show(i||0);pm.querySelector('.pm-x').focus();
+  }
+  function close(){pm.classList.remove('on');pm.setAttribute('aria-hidden','true');document.body.style.overflow=''}
+  function addCounts(){
+    [].forEach.call(g.querySelectorAll('.pup'),function(card){
+      var ph=card.querySelector('.ph'),n=photosOf(card).length;
+      if(ph&&n>1&&!ph.querySelector('.count')){var c=document.createElement('span');c.className='count';c.textContent=n+' fotos';ph.appendChild(c)}
+    });
+  }
+  addCounts();
+  g.addEventListener('click',function(e){var ph=e.target.closest('.ph');if(ph)open(ph.closest('.pup'),0)});
+  g.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('ph')){e.preventDefault();open(e.target.closest('.pup'),0)}});
+  pm.querySelector('.pm-x').onclick=close;
+  pm.querySelector('.p').onclick=function(){show(cur-1)};pm.querySelector('.n').onclick=function(){show(cur+1)};
+  pm.addEventListener('click',function(e){if(e.target===pm)close()});
+  document.addEventListener('keydown',function(e){if(!pm.classList.contains('on'))return;
+    if(e.key==='Escape')close();if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1)});
+})();
+</script>
+<script>
+/* Arrastar com o mouse nos carrosséis (no celular o dedo já rola) */
+(function(){
+  function drag(el){
+    if(!el)return;var down=false,moved=false,sx=0,sl=0;
+    el.addEventListener('pointerdown',function(e){if(e.pointerType!=='mouse'||e.button!==0)return;down=true;moved=false;sx=e.clientX;sl=el.scrollLeft});
+    window.addEventListener('pointermove',function(e){if(!down)return;var dx=e.clientX-sx;
+      if(!moved&&Math.abs(dx)>5){moved=true;el.classList.add('drag')}
+      if(moved)el.scrollLeft=sl-dx});
+    window.addEventListener('pointerup',function(){if(!down)return;down=false;el.classList.remove('drag')});
+    el.addEventListener('click',function(e){if(moved){e.preventDefault();e.stopPropagation();moved=false}},true);
+    el.addEventListener('dragstart',function(e){e.preventDefault()});
+  }
+  drag(document.getElementById('pups'));drag(document.getElementById('gal'));
 })();
 </script>
 <script>
